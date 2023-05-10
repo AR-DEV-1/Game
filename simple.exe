@@ -1,0 +1,106 @@
+// Import the necessary libraries
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+
+// Define the main class that extends JFrame
+public class SimpleGame extends JFrame {
+
+  // Define some constants for the window size and the grid size
+  public static final int WINDOW_WIDTH = 800;
+  public static final int WINDOW_HEIGHT = 600;
+  public static final int GRID_ROWS = 10;
+  public static final int GRID_COLS = 10;
+  public static final int GRID_SIZE = 50;
+
+  // Define some variables for the game logic
+  private int playerX; // The x-coordinate of the player
+  private int playerY; // The y-coordinate of the player
+  private int goalX; // The x-coordinate of the goal
+  private int goalY; // The y-coordinate of the goal
+  private boolean gameOver; // A flag to indicate if the game is over
+
+  // Define some variables for the enemies and obstacles
+  private int enemyCount; // The number of enemies on the grid
+  private int[] enemyX; // The x-coordinates of the enemies
+  private int[] enemyY; // The y-coordinates of the enemies
+  private int obstacleCount; // The number of obstacles on the grid
+  private int[] obstacleX; // The x-coordinates of the obstacles
+  private int[] obstacleY; // The y-coordinates of the obstacles
+
+  // Define a panel to draw the game graphics
+  private GamePanel gamePanel;
+
+  // Define a constructor that sets up the window and the game logic
+  public SimpleGame() {
+    // Set the title, size and location of the window
+    setTitle("Simple Game");
+    setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    setLocationRelativeTo(null);
+
+    // Create a new panel and add it to the window
+    gamePanel = new GamePanel();
+    add(gamePanel);
+
+    // Add a key listener to handle keyboard input
+    addKeyListener(new KeyAdapter() {
+      @Override
+      public void keyPressed(KeyEvent e) {
+        // Get the key code of the pressed key
+        int keyCode = e.getKeyCode();
+
+        // Move the player according to the arrow keys
+        if (keyCode == KeyEvent.VK_UP) {
+          movePlayer(0, -1);
+        } else if (keyCode == KeyEvent.VK_DOWN) {
+          movePlayer(0, 1);
+        } else if (keyCode == KeyEvent.VK_LEFT) {
+          movePlayer(-1, 0);
+        } else if (keyCode == KeyEvent.VK_RIGHT) {
+          movePlayer(1, 0);
+        }
+      }
+    });
+
+    // Set the window to be visible and focusable
+    setVisible(true);
+    setFocusable(true);
+
+    // Initialize the game logic
+    initGame();
+  }
+
+  // A method to initialize the game logic
+  public void initGame() {
+    // Randomly place the player and the goal on the grid
+    playerX = (int) (Math.random() * GRID_COLS);
+    playerY = (int) (Math.random() * GRID_ROWS);
+    goalX = (int) (Math.random() * GRID_COLS);
+    goalY = (int) (Math.random() * GRID_ROWS);
+
+    // Make sure the player and the goal are not on the same cell or on an obstacle cell
+    while (isOccupied(playerX, playerY) || isOccupied(goalX, goalY)) {
+      playerX = (int) (Math.random() * GRID_COLS);
+      playerY = (int) (Math.random() * GRID_ROWS);
+      goalX = (int) (Math.random() * GRID_COLS);
+      goalY = (int) (Math.random() * GRID_ROWS);
+    }
+
+    // Set the game over flag to false
+    gameOver = false;
+
+    // Randomly generate some enemies and obstacles on the grid
+    generateEnemies();
+    generateObstacles();
+  }
+
+  // A method to check if a cell is occupied by an enemy or an obstacle
+  public boolean isOccupied(int x, int y) {
+    // Loop through all the enemies and check if their coordinates match with x and y
+    for (int i = 0; i < enemyCount; i++) {
+      if (enemyX[i] == x && enemyY[i] == y) {
+        return true;
+      }
+    }
+
+    // Loop
